@@ -7,43 +7,65 @@
 </head>
 <body>
     <h2>每日訂單輸入</h2>
-    <input type="number" id="pid" placeholder="產品 ID">
+    
+    <!-- 1. 將 input 改為 select -->
+    <select id="productSelect">
+        <option value="">請選擇產品...</option>
+    </select>
+    
     <input type="number" id="start" placeholder="開始碼">
     <input type="number" id="end" placeholder="結束碼">
+    
+    <!-- 2. 新增 status 選擇 -->
+    <select id="statusSelect">
+        <option value="待處理">待處理</option>
+        <option value="已完成">已完成</option>
+    </select>
+    
     <button id="submitBtn">送出訂單</button>
 
     <script>
-        // 確保變數名稱唯一且不重複
         (function() {
             const url = 'https://mnmjachbccxrklkfquhe.supabase.co';
             const key = 'sb_publishable_51H9VYMb3KFPCIfoAQa5qA__1xoa7Sz';
-            
-            // 使用視窗全域變數確保只有一份實例
             window.mySupabase = supabase.createClient(url, key);
 
+            // 頁面載入時：讀取產品列表
+            async function loadProducts() {
+                const { data, error } = await window.mySupabase.from('products').select('id, product_name');
+                if (data) {
+                    const select = document.getElementById('productSelect');
+                    data.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.textContent = `${p.id} - ${p.product_name}`;
+                        select.appendChild(opt);
+                    });
+                }
+            }
+            loadProducts();
+
             document.getElementById('submitBtn').addEventListener('click', async () => {
-                const pid = document.getElementById('pid').value;
+                const pid = document.getElementById('productSelect').value;
                 const start = document.getElementById('start').value;
                 const end = document.getElementById('end').value;
+                const status = document.getElementById('statusSelect').value; // 獲取狀態
+
+                if(!pid) return alert('請選擇產品');
 
                 try {
-                    // 替換原本的 insert 部分
                     const { error } = await window.mySupabase.from('orders').insert([
                         { 
                             product_id: parseInt(pid), 
                             start_code: parseInt(start), 
                             end_code: parseInt(end),
-                            // 確保 quantity 是數字，這是觸發器判斷區間的關鍵
+                            status: status, // 寫入狀態
                             quantity: parseInt(end) - parseInt(start) + 1 
                         }
                     ]);
 
                     if (error) throw error;
-                    
                     alert('訂單已儲存！');
-                    document.getElementById('pid').value = '';
-                    document.getElementById('start').value = '';
-                    document.getElementById('end').value = '';
                 } catch (err) {
                     alert('系統錯誤: ' + err.message);
                 }
