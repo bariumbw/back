@@ -13,14 +13,12 @@
     <button id="submitBtn">送出訂單</button>
 
     <script>
-        // 1. 請填入你的實際資訊
-        const supabaseUrl = '你的_URL';
-        const supabaseKey = '你的_ANON_KEY';
+        // 僅使用 URL 與 Publishable Key
+        const supabaseUrl = 'https://mnmjachbccxrklkfquhe.supabase.co';
+        const supabaseKey = 'sb_publishable_51H9VYMb3KFPCIfoAQa5qA__1xoa7Sz';
         
-        // 2. 初始化 (宣告一次就夠了)
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 3. 按鈕動作
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const pid = document.getElementById('pid').value;
             const start = document.getElementById('start').value;
