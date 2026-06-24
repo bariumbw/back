@@ -27,11 +27,14 @@
                 const end = document.getElementById('end').value;
 
                 try {
+                    // 替換原本的 insert 部分
                     const { error } = await window.mySupabase.from('orders').insert([
                         { 
                             product_id: parseInt(pid), 
                             start_code: parseInt(start), 
-                            end_code: parseInt(end) 
+                            end_code: parseInt(end),
+                            // 確保 quantity 是數字，這是觸發器判斷區間的關鍵
+                            quantity: parseInt(end) - parseInt(start) + 1 
                         }
                     ]);
 
