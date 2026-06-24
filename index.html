@@ -13,37 +13,39 @@
     <button id="submitBtn">送出訂單</button>
 
     <script>
-        // 僅使用 URL 與 Publishable Key
-        const supabaseUrl = 'https://mnmjachbccxrklkfquhe.supabase.co';
-        const supabaseKey = 'sb_publishable_51H9VYMb3KFPCIfoAQa5qA__1xoa7Sz';
-        
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // 確保變數名稱唯一且不重複
+        (function() {
+            const url = 'https://mnmjachbccxrklkfquhe.supabase.co';
+            const key = 'sb_publishable_51H9VYMb3KFPCIfoAQa5qA__1xoa7Sz';
+            
+            // 使用視窗全域變數確保只有一份實例
+            window.mySupabase = supabase.createClient(url, key);
 
-        document.getElementById('submitBtn').addEventListener('click', async () => {
-            const pid = document.getElementById('pid').value;
-            const start = document.getElementById('start').value;
-            const end = document.getElementById('end').value;
+            document.getElementById('submitBtn').addEventListener('click', async () => {
+                const pid = document.getElementById('pid').value;
+                const start = document.getElementById('start').value;
+                const end = document.getElementById('end').value;
 
-            try {
-                const { error } = await supabase.from('orders').insert([
-                    { 
-                        product_id: parseInt(pid), 
-                        start_code: parseInt(start), 
-                        end_code: parseInt(end) 
-                    }
-                ]);
+                try {
+                    const { error } = await window.mySupabase.from('orders').insert([
+                        { 
+                            product_id: parseInt(pid), 
+                            start_code: parseInt(start), 
+                            end_code: parseInt(end) 
+                        }
+                    ]);
 
-                if (error) throw error;
-                
-                alert('訂單已儲存！');
-                document.getElementById('pid').value = '';
-                document.getElementById('start').value = '';
-                document.getElementById('end').value = '';
-            } catch (err) {
-                console.error('錯誤詳情:', err);
-                alert('系統錯誤: ' + err.message);
-            }
-        });
+                    if (error) throw error;
+                    
+                    alert('訂單已儲存！');
+                    document.getElementById('pid').value = '';
+                    document.getElementById('start').value = '';
+                    document.getElementById('end').value = '';
+                } catch (err) {
+                    alert('系統錯誤: ' + err.message);
+                }
+            });
+        })();
     </script>
 </body>
 </html>
