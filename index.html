@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>訂單輸入系統</title>
-    <!-- 確保先載入 Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -11,24 +10,24 @@
     <input type="number" id="pid" placeholder="產品 ID">
     <input type="number" id="start" placeholder="開始碼">
     <input type="number" id="end" placeholder="結束碼">
-    <!-- 改用監聽器方式，避免 onclick 找不到函數 -->
     <button id="submitBtn">送出訂單</button>
 
     <script>
-        // 替換為你的實際資訊
-        const supabaseUrl = 'https://mnmjachbccxrklkfquhe.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ubWphY2hiY2N4cmtsa2ZxdWhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTgxNjksImV4cCI6MjA5Nzc3NDE2OX0.5S2cddLThdl607Euwk6irLmL7bxw92fZ3VMY-T3WGNk';
+        // 1. 請填入你的實際資訊
+        const supabaseUrl = '你的_URL';
+        const supabaseKey = '你的_ANON_KEY';
         
-        // 初始化
+        // 2. 初始化 (宣告一次就夠了)
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+        // 3. 按鈕動作
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const pid = document.getElementById('pid').value;
             const start = document.getElementById('start').value;
             const end = document.getElementById('end').value;
 
             try {
-                const { data, error } = await supabase.from('orders').insert([
+                const { error } = await supabase.from('orders').insert([
                     { 
                         product_id: parseInt(pid), 
                         start_code: parseInt(start), 
